@@ -1,0 +1,7 @@
+.venv
+cookies.json
+output
+.env
+__pycache__
+data
+getElonMaskXInfo

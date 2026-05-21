@@ -1,0 +1,4 @@
+google-genai
+twikit
+python-dotenv
+httpx
