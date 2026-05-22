@@ -7,7 +7,7 @@ class WeComService:
     """企业微信推送服务类"""
     
     MAX_LENGTH = 4096
-    SEND_DELAY = 1.5
+    SEND_DELAY = 2.0
     
     def __init__(self, webhook_url: str):
         self.webhook_url = webhook_url
@@ -28,6 +28,7 @@ class WeComService:
         
         for i, chunk in enumerate(chunks, 1):
             await self._send_single_markdown(chunk, i, len(chunks), title)
+            # 添加延迟，避免触发企业微信 API 频率限制
             if i < len(chunks):
                 await asyncio.sleep(self.SEND_DELAY)
     

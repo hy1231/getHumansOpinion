@@ -71,7 +71,7 @@ class AIService:
             )
             return response.text.strip()
         except Exception as e:
-            return f"❌ AI 报告生成失败: {str(e)[:100]}\n\n{self._generate_fallback_report(items, personality_name)}"
+            return f"❌ AI 报告生成失败: {str(e)[:100]}"
     
     def _generate_fallback_report(self, items, personality_name):
         """当未配置 API Key 时生成降级报告"""

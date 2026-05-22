@@ -1,4 +1,5 @@
 """统一监控调度器模块"""
+
 import asyncio
 from datetime import datetime
 
@@ -83,11 +84,14 @@ class PersonalityMonitor:
             print(report, flush=True)
             print("="*60 + "\n", flush=True)
             
-            for item in new_items:
-                self.data_store.mark_sent(item['id'])
-            self.data_store.save_sent_items()
-            
-            ReportGenerator.save_report(report, self.personality_id, personality_name)
+            if report.startswith("❌ AI 报告生成失败"):
+                print("⚠️ AI 报告生成失败，不标记已发送，下次将重新抓取", flush=True)
+            else:
+                for item in new_items:
+                    self.data_store.mark_sent(item['id'])
+                self.data_store.save_sent_items()
+                
+                ReportGenerator.save_report(report, self.personality_id, personality_name)
             
             await self.wecom_service.send_markdown(report, f"{personality_name}动态报告")
             
