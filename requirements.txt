@@ -2,3 +2,5 @@ google-genai
 twikit
 python-dotenv
 httpx
+beautifulsoup4
+curl_cffi
