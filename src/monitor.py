@@ -65,7 +65,12 @@ class PersonalityMonitor:
             
             items = await self.fetcher.fetch_recent_items()
             if not items:
-                error_msg = f"❌ {personality_name} 动态抓取失败"
+                # 获取详细错误信息
+                error_reason = getattr(self.fetcher, 'last_error', None) or getattr(self.fetcher, '_last_error', None)
+                if error_reason:
+                    error_msg = f"❌ {personality_name} 动态抓取失败\n\n📝 失败原因: {error_reason}"
+                else:
+                    error_msg = f"❌ {personality_name} 动态抓取失败\n\n📝 失败原因: 未知错误"
                 print(f"📭 {error_msg}", flush=True)
                 await self.wecom_service.send_markdown(error_msg, f"{personality_name}抓取失败")
                 return

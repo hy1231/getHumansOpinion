@@ -22,6 +22,7 @@ class ElonMuskFetcher:
         print(f"\n📡 [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 正在获取 @{self.TARGET_USER} 的最新动态...")
         valid_items = []
         cursor = None
+        self.last_error = None
         
         url = f"https://x.com/i/api/graphql/{self.QUERY_ID}/UserTweets"
         headers = self._build_headers()
@@ -33,7 +34,8 @@ class ElonMuskFetcher:
                     resp = await client.get(url, headers=headers, params=params)
                     
                     if resp.status_code != 200:
-                        print(f"❌ 请求失败，状态码: {resp.status_code}")
+                        self.last_error = f"请求失败，状态码: {resp.status_code}"
+                        print(f"❌ {self.last_error}")
                         break
                     
                     data = resp.json()
@@ -51,7 +53,16 @@ class ElonMuskFetcher:
                 print(f"✅ 共抓取到 {len(valid_items)} 条最新动态")
                 return valid_items
                 
+            except httpx.ConnectTimeout:
+                self.last_error = "网络连接超时，请检查代理服务器是否正常"
+                print(f"💥 抓取失败: {self.last_error}")
+                return valid_items
+            except httpx.ProxyError:
+                self.last_error = "代理服务器连接失败，请检查代理配置"
+                print(f"💥 抓取失败: {self.last_error}")
+                return valid_items
             except Exception as e:
+                self.last_error = str(e)
                 print(f"💥 抓取解析失败: {e}")
                 import traceback
                 traceback.print_exc()

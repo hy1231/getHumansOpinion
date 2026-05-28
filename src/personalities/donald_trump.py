@@ -47,6 +47,7 @@ class DonaldTrumpFetcher:
         """获取最新动态列表"""
         self._log(f"开始获取 @{self.TARGET_USER} 的最新动态", "INFO")
         valid_items = []
+        self.last_error = None
         
         # 优先尝试 curl_cffi 方案（更稳定）
         if USE_CURL_CFFI:
@@ -65,6 +66,7 @@ class DonaldTrumpFetcher:
                 self._log(f"Playwright 成功获取 {len(valid_items)} 条动态", "SUCCESS")
                 return valid_items
         
+        self.last_error = "所有抓取方案均失败。可能原因：1) 代理服务器无法访问国外网站；2) 需要安装 Playwright；3) 需要配置 TRUTH_SOCIAL_COOKIES；4) 建议更换国外 VPS 代理"
         self._log("所有方案均失败", "ERROR")
         self._log("解决方法：", "INFO")
         self._log("  1. 安装 Playwright: pip install playwright && playwright install", "INFO")
