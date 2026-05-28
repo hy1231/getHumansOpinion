@@ -13,6 +13,7 @@ class Config:
         self.ct0 = os.getenv("TWITTER_CT0")
         self.google_api_key = os.getenv("GOOGLE_API_KEY")
         self.wecom_webhook_url = os.getenv("WECOM_WEBHOOK_URL")
+        self.truth_social_cookies = os.getenv("TRUTH_SOCIAL_COOKIES", "")
         
         # 默认配置
         self.check_interval_minutes = int(os.getenv("CHECK_INTERVAL_MINUTES", "30"))

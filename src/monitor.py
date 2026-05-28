@@ -65,7 +65,9 @@ class PersonalityMonitor:
             
             items = await self.fetcher.fetch_recent_items()
             if not items:
-                print("📭 未抓取到任何动态", flush=True)
+                error_msg = f"❌ {personality_name} 动态抓取失败"
+                print(f"📭 {error_msg}", flush=True)
+                await self.wecom_service.send_markdown(error_msg, f"{personality_name}抓取失败")
                 return
             
             print(f"📥 共抓取到 {len(items)} 条动态", flush=True)
@@ -86,14 +88,15 @@ class PersonalityMonitor:
             
             if report.startswith("❌ AI 报告生成失败"):
                 print("⚠️ AI 报告生成失败，不标记已发送，下次将重新抓取", flush=True)
+                await self.wecom_service.send_markdown(report, f"{personality_name}报告生成失败")
             else:
                 for item in new_items:
                     self.data_store.mark_sent(item['id'])
                 self.data_store.save_sent_items()
                 
                 ReportGenerator.save_report(report, self.personality_id, personality_name)
-            
-            await self.wecom_service.send_markdown(report, f"{personality_name}动态报告")
+                
+                await self.wecom_service.send_markdown(report, f"{personality_name}动态报告")
             
             print(f"\n✅ 任务执行完成", flush=True)
             
